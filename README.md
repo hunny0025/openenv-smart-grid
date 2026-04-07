@@ -1,4 +1,14 @@
+---
+title: EmailTriageEnv
+emoji: 📧
+colorFrom: blue
+colorTo: cyan
+sdk: docker
+pinned: false
+---
+
 # 📧 EmailTriageEnv
+
 
 > A real-world corporate email triage reinforcement learning environment for the **OpenEnv Hackathon**.  
 > Agents learn to classify urgency, route emails to the correct team, and draft professional replies.
