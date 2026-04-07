@@ -1,0 +1,223 @@
+[
+  {
+    "email_id": "hard_001",
+    "subject": "THREAD: Invoice dispute — Ref #2024-REF-0043",
+    "thread": [
+      {
+        "from": "lisa.park@vendorcorp.com",
+        "timestamp": "2024-03-10T10:00:00Z",
+        "message": "Hi Accounts,\n\nWe received your payment for invoice #INV-7821 last Friday. The agreed amount per our signed contract (ref MSA-2023-445, Schedule B) was $67,000 for Q1 deliverables. The payment we received was $55,000 — a shortfall of $12,000.\n\nI've attached a copy of the signed schedule showing the breakdown. Could you advise when the remaining $12,000 will be transferred? We're happy to resend original documentation if that helps.\n\nBest,\nLisa Park\nAccounts Receivable Manager\nVendor Corp International\nlisa.park@vendorcorp.com"
+      },
+      {
+        "from": "accounts@company.com",
+        "timestamp": "2024-03-11T09:15:00Z",
+        "message": "Hi Lisa,\n\nThanks for flagging this. We're looking into the discrepancy internally — it may be a bank processing delay or a phasing issue with our AP system. We'll get back to you within 48 hours.\n\nRegards,\nAccounts Payable Team"
+      },
+      {
+        "from": "lisa.park@vendorcorp.com",
+        "timestamp": "2024-03-13T11:45:00Z",
+        "message": "To whom it may concern,\n\nI'm following up on the below. I have not received a substantive response within the promised 48-hour window.\n\nI have now escalated this matter internally to our legal counsel, Morrison & Associates. They have advised the following:\n\n1. The invoice has been outstanding beyond the 30-day payment term specified in clause 8.4 of MSA-2023-445\n2. Under clause 8.6, we are entitled to charge 1.5% monthly interest on overdue amounts\n3. Under clause 12.1, persistent payment default constitutes grounds for contract termination and recovery proceedings\n\nWe strongly prefer to resolve this amicably. However, if we do not receive the full outstanding amount of $12,000 or a written payment commitment by 5pm Friday March 15th, Morrison & Associates will initiate formal recovery proceedings on Monday March 18th.\n\nPlease treat this as urgent and route to your legal and finance leadership.\n\nLisa Park\nVendor Corp International"
+      }
+    ],
+    "body_for_agent": "--- EMAIL THREAD (3 messages, oldest first) ---\n\n[MSG 1 — 2024-03-10 from lisa.park@vendorcorp.com]\nHi Accounts,\nWe received your payment for invoice #INV-7821 last Friday. The agreed amount per our signed contract (ref MSA-2023-445, Schedule B) was $67,000 for Q1 deliverables. The payment we received was $55,000 — a shortfall of $12,000.\nI've attached a copy of the signed schedule showing the breakdown. Could you advise when the remaining $12,000 will be transferred?\nBest, Lisa Park, Accounts Receivable Manager, Vendor Corp International\n\n[MSG 2 — 2024-03-11 from accounts@company.com]\nHi Lisa, thanks for flagging this. We're looking into the discrepancy internally — it may be a bank processing delay. We'll get back to you within 48 hours.\nRegards, Accounts Payable Team\n\n[MSG 3 — 2024-03-13 from lisa.park@vendorcorp.com — LATEST]\nFollowing up on the below. I have not received a substantive response within the promised 48-hour window.\nI have now escalated to our legal counsel, Morrison & Associates. They advise: (1) invoice outstanding beyond 30-day payment term per clause 8.4, (2) clause 8.6 entitles 1.5% monthly interest on overdue amounts, (3) clause 12.1 allows contract termination and recovery proceedings for persistent default.\nWe prefer to resolve amicably. However, if full payment or written commitment is not received by 5pm Friday March 15th, Morrison & Associates will initiate formal recovery proceedings on Monday March 18th.\nPlease treat as urgent and route to legal and finance leadership.\nLisa Park, Vendor Corp International",
+    "sender": "lisa.park@vendorcorp.com",
+    "timestamp": "2024-03-13T11:45:00Z",
+    "ground_truth": {
+      "urgency": "critical",
+      "team": "legal",
+      "acceptable_teams": ["management"],
+      "grading_notes": "THREAD SHIFT: Starts as routine billing discrepancy (MSG 1: medium urgency, billing team) → company misses its own 48-hr promise (MSG 2) → vendor escalates to external lawyers with specific contract clauses and a hard Friday deadline (MSG 3). Critical because: external legal counsel involved, contract termination threatened, 2-day deadline. Must go to legal, not billing.",
+      "thread_context_keywords": ["legal counsel", "Morrison", "clause 8.4", "recovery proceedings", "termination", "contract"],
+      "urgency_shift": "billing discrepancy (medium) → legal threat with contract clauses and hard deadline (critical)",
+      "reply_keywords": {
+        "mandatory": ["legal", "urgency", "payment"],
+        "important": ["counsel", "resolve", "clause", "management", "immediately"],
+        "bonus": ["Morrison", "Friday", "contract", "escalate", "$12,000"]
+      },
+      "reply_rubric": {
+        "must_acknowledge_legal_escalation": "Reference that external counsel is now involved",
+        "must_not_reply_as_billing": "This is no longer a billing issue — legal must be involved in the response",
+        "must_respect_friday_deadline": "Acknowledge the 5pm Friday deadline",
+        "must_express_commitment_to_resolution": "State intent to resolve before formal proceedings",
+        "tone": "Formal, serious, conciliatory"
+      }
+    }
+  },
+  {
+    "email_id": "hard_002",
+    "subject": "THREAD: Data export access — internal analytics project",
+    "thread": [
+      {
+        "from": "dev.santos@company.com",
+        "timestamp": "2024-03-05T09:00:00Z",
+        "message": "Hi Tech Team,\n\nCould I get temporary read-only access to the EU customer analytics dataset for Sprint 24.3? I just need the aggregated usage metrics export — no PII required. My manager (Claire Wong) has approved the access request (JIRA: ACC-2847).\n\nAccess needed: March 5-8 only\nDataset: eu_customer_analytics_v3\nScope: Read-only, aggregated data\n\nThanks,\nDev Santos\nData Analyst, Product Intelligence"
+      },
+      {
+        "from": "tech-infra@company.com",
+        "timestamp": "2024-03-05T14:30:00Z",
+        "message": "Hi Dev,\n\nAccess granted per ACC-2847. Temporary read-only permissions set on eu_customer_analytics_v3 with automatic revocation on March 8th EOD. Let us know if you need anything else.\n\nInfra Team"
+      },
+      {
+        "from": "dev.santos@company.com",
+        "timestamp": "2024-03-12T16:50:00Z",
+        "message": "Hey,\n\nSo this is awkward. I need to flag something.\n\nWhen I ran the export on March 7th, I assumed it was the aggregated dataset as requested. But I was reviewing the files today for a different reason and realized the CSV I downloaded actually contains what appear to be raw, individual-level records for approximately 4,200 EU-based customers. Specifically:\n\n- Full names\n- Email addresses\n- Purchase histories with order values\n- IP addresses with geolocation\n- Last login timestamps\n\nThis data is currently sitting in a folder on my local MacBook (not encrypted) and I also uploaded a copy to our team's shared Google Drive for another analyst to review.\n\nI didn't realize this was PII until today — I thought it was the aggregated export. What should I do? Should I just delete it?\n\nDev"
+      }
+    ],
+    "body_for_agent": "--- EMAIL THREAD (3 messages, oldest first) ---\n\n[MSG 1 — 2024-03-05 from dev.santos@company.com]\nHi Tech Team, could I get temporary read-only access to EU customer analytics dataset for Sprint 24.3? Just need aggregated usage metrics, no PII. Manager approved (JIRA: ACC-2847). Access needed March 5-8 only.\nDev Santos, Data Analyst, Product Intelligence\n\n[MSG 2 — 2024-03-05 from tech-infra@company.com]\nAccess granted per ACC-2847. Temporary read-only, auto-revocation March 8th EOD.\nInfra Team\n\n[MSG 3 — 2024-03-12 from dev.santos@company.com — LATEST]\nI need to flag something. The CSV I exported on March 7th actually contains raw individual-level PII for ~4,200 EU customers: full names, email addresses, purchase histories, IP addresses with geolocation, and login timestamps.\nThis data is currently on my local MacBook (not encrypted) AND uploaded to our team's shared Google Drive.\nI didn't realize it was PII until today. Should I just delete it?\nDev",
+    "sender": "dev.santos@company.com",
+    "timestamp": "2024-03-12T16:50:00Z",
+    "ground_truth": {
+      "urgency": "critical",
+      "team": "legal",
+      "acceptable_teams": ["technical", "management"],
+      "grading_notes": "THREAD SHIFT: Starts as routine data access request (MSG 1: low urgency, technical team) → access granted normally (MSG 2) → accidental PII export of 4,200 EU citizens' personal data now sitting unencrypted on a laptop AND shared Google Drive (MSG 3). This is a potential GDPR Article 33 reportable breach (must notify supervisory authority within 72 hours). The data includes names, emails, purchase history, IPs — all clearly personal data under GDPR. Legal team must assess breach notification obligations.",
+      "thread_context_keywords": ["PII", "GDPR", "EU customers", "data breach", "local machine", "email addresses", "Google Drive", "unencrypted"],
+      "urgency_shift": "routine data access (low) → GDPR-reportable personal data breach (critical)",
+      "reply_keywords": {
+        "mandatory": ["immediately", "legal", "data"],
+        "important": ["GDPR", "breach", "delete", "compliance", "escalate", "privacy"],
+        "bonus": ["72 hours", "notification", "encrypt", "Google Drive", "DPO", "incident"]
+      },
+      "reply_rubric": {
+        "must_instruct_not_to_delete_yet": "Premature deletion could destroy evidence needed for breach assessment",
+        "must_escalate_to_legal_and_dpo": "GDPR breach assessment requires legal and DPO involvement",
+        "must_frame_as_incident": "This is a data protection incident, not a 'bug'",
+        "must_instruct_to_secure_data": "Tell Dev to not share further and secure the existing copies",
+        "tone": "Calm, serious, procedural — not punitive"
+      }
+    }
+  },
+  {
+    "email_id": "hard_003",
+    "subject": "THREAD: Performance review disagreement — appeal ref AP-2024-021",
+    "thread": [
+      {
+        "from": "marcus.grey@company.com",
+        "timestamp": "2024-03-01T11:00:00Z",
+        "message": "Hi HR,\n\nI recently received my annual performance review for FY2023 and was rated 'Meets Expectations'. I respectfully disagree with this assessment based on my documented contributions:\n\n- Closed 3 major enterprise accounts (combined ACV: $420,000)\n- Exceeded Q3 and Q4 individual quota by 118% and 132% respectively\n- Mentored 2 junior SDRs (both promoted to AE within 6 months)\n- Received the Q4 'Presidents Club' nomination from my skip-level\n\nI believe this warrants an 'Exceeds Expectations' rating at minimum. Can I request a formal appeal under the performance management policy?\n\nMarcus Grey\nSenior Sales Executive"
+      },
+      {
+        "from": "hr@company.com",
+        "timestamp": "2024-03-02T10:00:00Z",
+        "message": "Hi Marcus,\n\nThank you for raising this. You are entitled to formally appeal within 14 calendar days under Section 6.3 of our Performance Management Policy. I'll send you the appeal form (FM-PERF-04) today via DocuSign.\n\nPlease complete and return it with any supporting documentation by March 15th.\n\nBest,\nHR Team"
+      },
+      {
+        "from": "marcus.grey@company.com",
+        "timestamp": "2024-03-14T09:30:00Z",
+        "message": "HR Team,\n\nI submitted appeal form FM-PERF-04 via DocuSign on March 3rd, reference AP-2024-021. The 14-day response window from Section 6.3 has now elapsed and I have received no acknowledgment, no panel date, and no communication of any kind.\n\nIn the meantime, I've done some research that concerns me deeply:\n\n1. My manager, David Liu, who assigned the 'Meets Expectations' rating, is a close personal friend of VP Sales Richard Ortega — they co-own a holiday property in Portugal together\n2. Richard Ortega was the sole sign-off authority on my review with no independent oversight\n3. Two other team members (both male) with lower quota attainment than mine received 'Exceeds Expectations' ratings from the same manager\n4. I am the only woman on the enterprise sales team\n\nI have now retained Cassandra Walsh of Walsh Employment Law LLP to advise me. Ms Walsh believes there are grounds for a sex discrimination claim under the Equality Act 2010, specifically regarding:\n- Disparate treatment in performance ratings (Section 13 — Direct Discrimination)\n- Failure to follow the company's own appeal procedures (potential victimisation under Section 27)\n\nI expect this to be escalated to your Head of People and General Counsel within 24 hours, or Ms Walsh will file a preliminary claim with the Employment Tribunal.\n\nMarcus Grey"
+      }
+    ],
+    "body_for_agent": "--- EMAIL THREAD (3 messages, oldest first) ---\n\n[MSG 1 — 2024-03-01 from marcus.grey@company.com]\nHi HR, I received my FY2023 review rated 'Meets Expectations' but I exceeded quota by 118-132%, closed $420k ACV, mentored 2 juniors (both promoted), and received Presidents Club nomination. Requesting formal appeal.\nMarcus Grey, Senior Sales Executive\n\n[MSG 2 — 2024-03-02 from hr@company.com]\nYou are entitled to appeal within 14 days under Section 6.3. Sending appeal form FM-PERF-04 via DocuSign. Please return by March 15th.\nHR Team\n\n[MSG 3 — 2024-03-14 from marcus.grey@company.com — LATEST]\nI submitted appeal AP-2024-021 on March 3rd. The 14-day window has elapsed with zero response.\n\nNew concerns: (1) Manager David Liu and VP Richard Ortega co-own property together — conflict of interest, (2) Ortega was sole sign-off with no oversight, (3) Two male colleagues with lower quota attainment received 'Exceeds Expectations', (4) I am the only woman on the team.\n\nI have retained Cassandra Walsh of Walsh Employment Law LLP. She believes there are grounds for sex discrimination under the Equality Act 2010 (Section 13 — Direct Discrimination, Section 27 — Victimisation for pursuing the appeal).\n\nExpect escalation to Head of People and General Counsel within 24 hours, or a preliminary claim will be filed with the Employment Tribunal.\nMarcus Grey",
+    "sender": "marcus.grey@company.com",
+    "timestamp": "2024-03-14T09:30:00Z",
+    "ground_truth": {
+      "urgency": "critical",
+      "team": "legal",
+      "acceptable_teams": ["hr", "management"],
+      "grading_notes": "THREAD SHIFT: Starts as a standard performance review appeal (MSG 1: medium urgency, HR team) → HR sends the appeal form (MSG 2, routine) → employee returns with retained employment lawyer, specific Equality Act sections, evidence of sex discrimination pattern, and a 24-hour ultimatum before Employment Tribunal filing (MSG 3). This has shifted from HR to Legal because: (1) external lawyer retained, (2) discrimination claim with specific legal citations, (3) hard 24-hour deadline, (4) potential Employment Tribunal action. Company absolutely needs its General Counsel involved.",
+      "thread_context_keywords": ["discrimination", "Equality Act", "employment solicitor", "tribunal", "conflict of interest", "sex discrimination", "victimisation"],
+      "urgency_shift": "performance review appeal (medium) → employment discrimination claim with legal counsel and tribunal threat (critical)",
+      "reply_keywords": {
+        "mandatory": ["legal", "escalate", "immediately"],
+        "important": ["discrimination", "appeal", "management", "counsel", "investigate"],
+        "bonus": ["Equality Act", "tribunal", "General Counsel", "conflict of interest", "24 hours"]
+      },
+      "reply_rubric": {
+        "must_acknowledge_legal_severity": "This is now a legal matter, not just an HR grievance",
+        "must_commit_to_escalation_timeline": "Promise escalation within the 24-hour window",
+        "must_not_opine_on_merits": "Do NOT comment on whether discrimination occurred — that's for legal/investigation",
+        "must_preserve_process_integrity": "Acknowledge the appeal process failure and commit to investigating it",
+        "tone": "Formal, measured, legally cautious"
+      }
+    }
+  },
+  {
+    "email_id": "hard_004",
+    "subject": "THREAD: EU data centre migration — weekend maintenance",
+    "thread": [
+      {
+        "from": "ops.lead@company.com",
+        "timestamp": "2024-03-08T08:00:00Z",
+        "message": "Hi all,\n\nPlanned maintenance notice: we're migrating the primary EU data centre from Frankfurt (eu-west-1) to Dublin (eu-west-3) this weekend, March 9-10.\n\nExpected impact:\n- Downtime window: Saturday 11pm - Sunday 3am CET (4 hours max)\n- Affected services: EU API gateway, EU data storage, EU CDN\n- Not affected: US and APAC regions\n\nCustomer comms are going out Friday afternoon via Intercom. Enterprise accounts will get personal emails from their CSMs.\n\nChange ticket: CHG-4821\nRollback plan: documented in Confluence under 'EU Migration Playbook'\n\nThanks,\nMike Torres\nOps Lead"
+      },
+      {
+        "from": "enterprise.support@company.com",
+        "timestamp": "2024-03-08T13:00:00Z",
+        "message": "Thanks Mike. We'll notify our Tier 1 enterprise accounts today and ensure their CSMs are aware. Will also update the status page at 10pm Saturday.\n\nEnterprise Support"
+      },
+      {
+        "from": "priya.nair@hospitalchain.io",
+        "timestamp": "2024-03-09T23:45:00Z",
+        "message": "URGENT — PATIENT SAFETY ISSUE\n\nTo whom it may concern,\n\nI am Priya Nair, CTO of National Hospital Partners. We operate 14 hospitals and 47 outpatient clinics across the UK and Ireland.\n\nYour service has been completely down since approximately 11:00pm tonight. Our patient scheduling and electronic health records (EHR) system integrates directly with your EU API gateway for real-time appointment management and patient data retrieval.\n\nCurrent impact:\n- 14 hospitals CANNOT access or create patient appointments\n- 3 A&E departments have reverted to paper-based triage — increasing error risk\n- Night shift staff at Royal London cannot pull patient medication histories\n- Emergency surgical scheduling at St. James's is operating blind\n\nThis is not a commercial inconvenience — this is a PATIENT SAFETY issue.\n\nContractual position:\n- Our SLA (Enterprise Agreement EA-2023-089) guarantees 99.95% uptime\n- Section 7.2 requires 30 days advance written notice of planned maintenance\n- We received no advance notice of this migration\n- Our system is classified as HIPAA-equivalent under NHS Digital's DCB0129 standard\n\nI am copying our Chief Medical Officer and our external legal counsel on this email. If service is not restored within 60 minutes, we will:\n1. File an incident report with NHS Digital\n2. Initiate an SLA breach claim under EA-2023-089\n3. Engage our backup provider\n\nPlease respond IMMEDIATELY with an ETA for restoration and the name of the executive managing this incident.\n\nPriya Nair\nCTO, National Hospital Partners\npriya.nair@hospitalchain.io\n+44 7911 123456"
+      }
+    ],
+    "body_for_agent": "--- EMAIL THREAD (3 messages, oldest first) ---\n\n[MSG 1 — 2024-03-08 from ops.lead@company.com — INTERNAL]\nPlanned maintenance: EU data centre migration Frankfurt→Dublin, Saturday 11pm-3am CET (4hr window). Affects EU API gateway, storage, CDN. Customer comms going out Friday via Intercom. Change ticket CHG-4821.\nMike Torres, Ops Lead\n\n[MSG 2 — 2024-03-08 from enterprise.support@company.com — INTERNAL]\nWill notify Tier 1 enterprise accounts today. Status page update at 10pm Saturday.\nEnterprise Support\n\n[MSG 3 — 2024-03-09 at 23:45 from priya.nair@hospitalchain.io — INCOMING, EXTERNAL]\nURGENT — PATIENT SAFETY ISSUE\n14 hospitals and 47 clinics affected — cannot access patient appointments or EHR data. 3 A&E departments on paper-based triage. Night shift at Royal London cannot pull medication histories. Emergency surgical scheduling at St. James's operating blind.\nSLA EA-2023-089 guarantees 99.95% uptime. Section 7.2 requires 30 days notice for maintenance — we received none. System is HIPAA-equivalent under NHS Digital DCB0129.\nCopying Chief Medical Officer and external legal counsel. If not restored in 60 minutes: NHS Digital incident report, SLA breach claim, backup provider activation.\nPriya Nair, CTO, National Hospital Partners, +44 7911 123456",
+    "sender": "priya.nair@hospitalchain.io",
+    "timestamp": "2024-03-09T23:45:00Z",
+    "ground_truth": {
+      "urgency": "critical",
+      "team": "management",
+      "acceptable_teams": ["technical", "legal"],
+      "grading_notes": "THREAD SHIFT: Starts as planned internal maintenance (MSG 1: low/informational) → internal acknowledgment (MSG 2) → EXTERNAL customer experiencing the downtime as a PATIENT SAFETY crisis (MSG 3). This has escalated from a routine ops ticket to a multi-dimensional emergency: (1) patient safety at 14 hospitals, (2) SLA breach with specific contract references, (3) regulatory exposure (NHS Digital, DCB0129), (4) external legal counsel already copied, (5) 60-minute ultimatum. Needs MANAGEMENT because this requires executive-level incident command — technical alone can't address the legal, regulatory, and customer relationship dimensions. Not just legal because the immediate priority is service restoration.",
+      "thread_context_keywords": ["patient safety", "hospital", "SLA breach", "NHS Digital", "DCB0129", "A&E", "maintenance", "no notice"],
+      "urgency_shift": "planned maintenance (low) → patient safety crisis with SLA breach, regulatory exposure, and 60-min ultimatum (critical)",
+      "reply_keywords": {
+        "mandatory": ["immediately", "restore", "patient"],
+        "important": ["SLA", "escalate", "management", "priority", "apologize", "incident"],
+        "bonus": ["executive", "60 minutes", "NHS", "hospital", "ETA", "CMO"]
+      },
+      "reply_rubric": {
+        "must_acknowledge_patient_safety": "This is not a commercial complaint — explicitly recognise the patient safety dimension",
+        "must_provide_restoration_eta": "Give a concrete ETA or state that restoration is highest priority",
+        "must_escalate_to_exec_level": "State that executive/incident management is engaged",
+        "must_acknowledge_notice_failure": "The customer is right that 30-day notice wasn't provided to them",
+        "must_not_blame_customer": "Do NOT say 'this was communicated' — clearly it wasn't communicated to THIS customer",
+        "tone": "Executive-level crisis response — immediate, serious, accountable"
+      }
+    }
+  },
+  {
+    "email_id": "hard_005",
+    "subject": "THREAD: DataSuite Pro licence renewal — 500 seats",
+    "thread": [
+      {
+        "from": "procurement@company.com",
+        "timestamp": "2024-02-20T10:00:00Z",
+        "message": "Hi Vendor Renewals,\n\nWe'd like to initiate the renewal process for our DataSuite Pro licence:\n\n- Current plan: Enterprise, 500 seats\n- Current annual cost: £85,000\n- Contract expires: March 31st, 2024\n- Stakeholders: Engineering (primary), Finance (secondary), Legal (for terms review)\n\nPlease send updated pricing and licence terms for the 2024-2025 period.\n\nRegards,\nProcurement Team\nref: PO-2024-0193"
+      },
+      {
+        "from": "renew@datasuitepro.com",
+        "timestamp": "2024-02-21T09:00:00Z",
+        "message": "Hi,\n\nThank you for your renewal enquiry. We're pleased to continue our partnership.\n\nOur updated pricing for the Enterprise 500-seat licence for 2024-2025 is:\n- Annual fee: £124,000 (previously £85,000)\n- This reflects a 46% increase driven by our new AI-powered analytics suite, enhanced SLA tier, and dedicated support channel\n- Payment terms: Net-30 from signing\n\nThe updated licence agreement (v4.2) is attached. Please note Section 11.3 (Data Portability) now includes a revised data export policy.\n\nYour current licence expires March 31st, 2024.\n\nAccount Manager\nDataSuite Pro"
+      },
+      {
+        "from": "renew@datasuitepro.com",
+        "timestamp": "2024-03-18T08:00:00Z",
+        "message": "FORMAL NOTICE — Licence Expiry Reminder\n\nDear Customer,\n\nThis is a formal reminder that your DataSuite Pro Enterprise licence (Account: ACC-8847, 500 seats) expires in 13 calendar days on March 31st, 2024.\n\nIf the attached agreement (v4.2) is not signed by March 31st:\n1. All user access will be terminated automatically at 00:00 UTC April 1st\n2. API integrations will return 403 Forbidden errors\n3. Data exports will be disabled for 30 calendar days under our data retention policy (Section 11.3)\n4. After 30 days, all customer data will be permanently purged per Section 11.5\n5. Re-activation after lapse requires a new contract at then-current pricing (minimum 12-month commitment)\n\n14 of your engineering teams currently have active daily integrations with our API. Termination will break these workflows.\n\nTo proceed with renewal, sign the attached agreement. To confirm non-renewal and begin data retrieval, reply to this email.\n\nLicence Compliance Team\nDataSuite Pro"
+      }
+    ],
+    "body_for_agent": "--- EMAIL THREAD (3 messages, oldest first) ---\n\n[MSG 1 — 2024-02-20 from procurement@company.com — INTERNAL/OUTBOUND]\nInitiating renewal for DataSuite Pro: Enterprise 500 seats, currently £85k/year, expires March 31st. Requesting updated pricing and terms.\nProcurement Team, ref PO-2024-0193\n\n[MSG 2 — 2024-02-21 from renew@datasuitepro.com — VENDOR RESPONSE]\nNew pricing: £124,000/year (+46% increase). Cites AI analytics suite, enhanced SLA, dedicated support. Attached agreement v4.2 with revised data export policy (Section 11.3). Licence expires March 31st.\nAccount Manager, DataSuite Pro\n\n[MSG 3 — 2024-03-18 from renew@datasuitepro.com — FORMAL NOTICE]\nFORMAL NOTICE: Licence expires in 13 days (March 31st). If not renewed: (1) all access terminated April 1st, (2) APIs return 403 errors, (3) data exports disabled 30 days, (4) data permanently purged after 30 days per Section 11.5, (5) re-activation requires new contract at new pricing.\n14 engineering teams have active daily API integrations that will break.\nSign agreement or confirm non-renewal immediately.\nLicence Compliance Team, DataSuite Pro",
+    "sender": "renew@datasuitepro.com",
+    "timestamp": "2024-03-18T08:00:00Z",
+    "ground_truth": {
+      "urgency": "high",
+      "team": "management",
+      "acceptable_teams": ["legal", "billing"],
+      "grading_notes": "THREAD SHIFT: Starts as routine procurement renewal request (MSG 1: low urgency) → vendor responds with 46% price increase (MSG 2: requires budget discussion) → formal deadline notice with data hostage scenario: 13 days to decide or lose all data and break 14 engineering team integrations (MSG 3). This is a forced-decision scenario requiring management because: (1) 46% budget increase needs executive approval, (2) data loss risk needs risk assessment, (3) 14 teams would be disrupted — this isn't a procurement-level decision. Not critical because 13 days IS enough time, but high because the consequences of inaction are severe and irreversible.",
+      "thread_context_keywords": ["46% increase", "data purged", "13 days", "terminate", "API integrations", "Section 11.5", "re-activation"],
+      "urgency_shift": "routine renewal (low) → forced high-stakes decision with data loss risk and 13-day deadline (high)",
+      "reply_keywords": {
+        "mandatory": ["management", "decision", "urgent"],
+        "important": ["licence", "renewal", "deadline", "negotiate", "legal"],
+        "bonus": ["46%", "data", "integration", "budget", "March 31st", "escalate"]
+      },
+      "reply_rubric": {
+        "must_escalate_for_budget_decision": "£124k is 46% more than current — needs leadership approval",
+        "must_assess_data_risk": "Acknowledge the data purge threat and integration breakage",
+        "must_propose_negotiation_or_decision_timeline": "Suggest either negotiating the price or making a go/no-go decision",
+        "must_involve_legal_for_terms": "Section 11.3/11.5 changes need legal review",
+        "tone": "Decisive, strategic, calm"
+      }
+    }
+  }
+]

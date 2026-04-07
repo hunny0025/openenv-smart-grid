@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EmailTriageEnv // NEURAL TERMINAL</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📧</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Inter:wght@300;400;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-void: #09090F;
+            --bg-surface: #0F0F1A;
+            --bg-elevated: #151525;
+            --border: rgba(0, 245, 255, 0.12);
+            --border-hot: #00F5FF;
+            --accent-cyan: #00F5FF;
+            --accent-amber: #FFB800;
+            --accent-red: #FF3B5C;
+            --accent-green: #00FF94;
+            --text-primary: #E8E8F0;
+            --text-secondary: #6B6B8A;
+            --text-dim: #3A3A5A;
+            --text-nav-inactive: #4A4A6A;
+            
+            --panel-left-width: 260px;
+            --panel-right-width: 320px;
+        }
+
+        @keyframes scanlineScroll {
+            0% { background-position: 0 0; }
+            100% { background-position: 0 100vh; }
+        }
+
+        @keyframes criticalPulse {
+            0%, 100% { box-shadow: -4px 0 20px rgba(255,59,92,0.6), inset 4px 0 20px rgba(255,59,92,0.08); }
+            50% { box-shadow: -4px 0 32px rgba(255,59,92,0.9), inset 4px 0 28px rgba(255,59,92,0.15); }
+        }
+
+        @keyframes criticalTextPulse {
+            0%, 100% { text-shadow: 0 0 8px rgba(255,59,92,0.8); }
+            50% { text-shadow: 0 0 20px rgba(255,59,92,1), 0 0 40px rgba(255,59,92,0.4); }
+        }
+
+        @keyframes shimmer {
+            from { left: -100%; }
+            to { left: 100%; }
+        }
+
+        @keyframes slideInUp {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            cursor: crosshair;
+        }
+
+        body {
+            background-color: var(--bg-void);
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            user-select: none;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 9999;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(0, 245, 255, 0.012) 2px,
+                rgba(0, 245, 255, 0.012) 4px
+            );
+            background-size: 100% 4px;
+            animation: scanlineScroll 12s linear infinite;
+        }
+
+        /* BOOT OVERLAY */
+        #boot-overlay {
+            position: fixed;
+            inset: 0;
+            background: var(--bg-void);
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            color: var(--accent-cyan);
+            gap: 8px;
+        }
+
+        #boot-container {
+            width: 400px;
+            text-align: left;
+        }
+
+        /* MAIN UI */
+        #main-ui {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+        }
+
+        /* SIDEBAR (STEP 1: CSS FIX) */
+        .sidebar {
+            width: var(--panel-left-width);
+            border-right: 1px solid var(--border);
+            background: var(--bg-surface);
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            padding: 24px 0;
+            z-index: 10;
+        }
+
+        .logo-area {
+            padding: 0 24px;
+            margin-bottom: 32px;
+        }
+
+        .logo-text {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            font-size: 18px;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            color: var(--accent-cyan);
+        }
+
+        .cursor {
+            width: 8px;
+            height: 18px;
+            background: var(--accent-cyan);
+            margin-left: 4px;
+            animation: blink 1s step-end infinite;
+        }
+
+        @keyframes blink { 50% { opacity: 0; } }
+
+        .version-badge {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            color: var(--text-dim);
+            margin-top: 4px;
+            letter-spacing: 0.1em;
+        }
+
+        .nav {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .nav-item {
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.15s ease;
+            border-left: 2px solid transparent;
+            padding: 10px 16px 10px 14px;
+            font-family: 'DM Mono', monospace;
+            font-size: 11px;
+            letter-spacing: 0.1em;
+            color: #4A4A6A;
+            text-transform: uppercase;
+            text-decoration: none;
+        }
+
+        .nav-item:hover {
+            color: #A0A0C0;
+            background: rgba(0, 245, 255, 0.04);
+            border-left-color: rgba(0, 245, 255, 0.3);
+        }
+
+        .nav-item.nav-active {
+            color: #00F5FF !important;
+            background: rgba(0, 245, 255, 0.08) !important;
+            border-left: 2px solid #00F5FF !important;
+            text-shadow: 0 0 12px rgba(0, 245, 255, 0.5);
+        }
+
+        .status-block {
+            margin-top: auto;
+            padding: 24px;
+            border-top: 1px solid var(--border);
+            font-family: 'DM Mono', monospace;
+            font-size: 11px;
+            color: var(--text-dim);
+        }
+
+        .status-line { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+        .status-dot { width: 6px; height: 6px; background: var(--accent-green); border-radius: 50%; box-shadow: 0 0 8px var(--accent-green); }
+
+        .codenova {
+            padding: 0 24px;
+            font-size: 10px;
+            letter-spacing: 0.2em;
+            color: var(--accent-amber);
+            opacity: 0.6;
+            text-transform: uppercase;
+            margin-top: 12px;
+        }
+
+        /* MAIN AREA & PANELS (STEP 3: CSS) */
+        .main-panel {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            background: var(--bg-void);
+            overflow-y: auto;
+        }
+
+        /* Global Panel styles */
+        .panel { padding: 24px; }
+        .panel-header { 
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            color: #00F5FF;
+            letter-spacing: 0.1em;
+            padding-bottom: 16px;
+            border-bottom: 1px solid rgba(0,245,255,0.15);
+            margin-bottom: 24px;
+            text-transform: uppercase;
+        }
+        .panel-section-title {
+            font-family: 'DM Mono', monospace;
+            font-size: 10px;
+            letter-spacing: 0.15em;
+            color: #6B6B8A;
+            margin: 24px 0 12px 0;
+            text-transform: uppercase;
+        }
+
+        /* Dashboard */
+        .dash-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px; }
+        .dash-card { background: #0F0F1A; border: 1px solid rgba(0,245,255,0.1); padding: 16px; text-align: center; }
+        .dash-label { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.15em; color: #6B6B8A; margin-bottom: 8px; }
+        .dash-value { font-family: 'JetBrains Mono', monospace; font-size: 24px; color: #00F5FF; font-weight: 700; }
+
+        .status-table { width: 100%; border-collapse: collapse; font-family: 'JetBrains Mono', monospace; font-size: 12px; }
+        .status-table th { text-align: left; color: #3A3A5A; font-size: 10px; letter-spacing: 0.1em; padding: 8px 12px; border-bottom: 1px solid rgba(0,245,255,0.08); }
+        .status-table td { padding: 10px 12px; color: #E8E8F0; border-bottom: 1px solid rgba(255,255,255,0.04); }
+        .status-table tr:hover td { background: rgba(0,245,255,0.03); }
+
+        .sys-log { background: #09090F; border: 1px solid rgba(0,245,255,0.1); padding: 12px; font-family: 'JetBrains Mono', monospace; font-size: 12px; height: 200px; overflow-y: auto; }
+        .log-line { padding: 4px 0; color: #6B6B8A; }
+        .log-time { color: rgba(0,245,255,0.4); margin-right: 12px; }
+
+        /* Corpus */
+        .corpus-filters { display: flex; gap: 8px; margin-bottom: 16px; }
+        .filter-btn { background: transparent; border: 1px solid rgba(0,245,255,0.2); color: #6B6B8A; font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.1em; padding: 6px 12px; cursor: pointer; transition: all 0.15s ease; }
+        .filter-btn:hover, .active-filter { border-color: #00F5FF; color: #00F5FF; background: rgba(0,245,255,0.08); }
+
+        .corpus-email { border: 1px solid rgba(0,245,255,0.08); background: #0F0F1A; padding: 12px 16px; margin-bottom: 8px; cursor: pointer; transition: all 0.15s ease; display: flex; justify-content: space-between; align-items: center; }
+        .corpus-email:hover { border-color: rgba(0,245,255,0.3); background: rgba(0,245,255,0.04); }
+        .corpus-email-meta { font-family: 'JetBrains Mono', monospace; font-size: 11px; }
+        .corpus-subject { color: #E8E8F0; margin-bottom: 4px; }
+        .corpus-sender { color: #6B6B8A; font-size: 10px; }
+
+        /* Grader */
+        .grader-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .grader-card { background: #0F0F1A; border: 1px solid rgba(0,245,255,0.1); padding: 16px; }
+        .grader-title { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.12em; color: #00F5FF; margin-bottom: 8px; }
+        .grader-desc { font-size: 11px; color: #6B6B8A; line-height: 1.6; margin-bottom: 12px; }
+        .mini-table { width: 100%; font-family: 'JetBrains Mono', monospace; font-size: 11px; }
+        .mini-table th { color: #3A3A5A; padding: 4px 6px; font-size: 10px; }
+        .mini-table td { padding: 4px 6px; text-align: center; }
+        .team-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.04); font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #E8E8F0; }
+        .match-exact { color: #00FF94; }
+        .match-partial { color: #FFB800; }
+        .match-none { color: #FF3B5C; }
+        .keyword-demo { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+        .kw-hit { color: #00FF94; font-size: 11px; font-family: 'JetBrains Mono'; }
+        .kw-miss { color: #FF3B5C; font-size: 11px; font-family: 'JetBrains Mono'; }
+        .grader-output { background: #09090F; border: 1px solid rgba(0,245,255,0.1); padding: 16px; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #6B6B8A; line-height: 2; }
+        .grader-total { color: #E8E8F0; margin-top: 8px; border-top: 1px solid rgba(0,245,255,0.1); padding-top: 8px; }
+
+        /* Metrics */
+        .bar-chart { display: flex; align-items: flex-end; gap: 6px; height: 120px; border-bottom: 1px solid rgba(0,245,255,0.1); }
+        .chart-bar { flex: 1; background: rgba(0,245,255,0.15); border-top: 1px solid rgba(0,245,255,0.4); position: relative; cursor: pointer; }
+        .chart-bar:hover { background: rgba(0,245,255,0.3); }
+        .active-bar { background: rgba(0,245,255,0.3) !important; border-top-color: #00F5FF; }
+        .bar-val { position: absolute; top: -18px; left: 50%; transform: translateX(-50%); font-family: 'JetBrains Mono', monospace; font-size: 9px; color: #6B6B8A; white-space: nowrap; }
+
+        .metrics-breakdown { display: flex; flex-direction: column; gap: 12px; }
+        .mb-row { display: flex; align-items: center; gap: 12px; }
+        .mb-label { font-family: 'DM Mono', monospace; font-size: 10px; color: #6B6B8A; width: 140px; flex-shrink: 0; }
+        .mb-bar-wrap { flex: 1; height: 4px; background: rgba(255,255,255,0.06); border-radius: 2px; }
+        .mb-bar { height: 100%; border-radius: 2px; }
+        .mb-val { font-family: 'JetBrains Mono', monospace; font-size: 12px; width: 40px; text-align: right; }
+
+        .score-dist { display: flex; flex-direction: column; gap: 8px; }
+        .sd-row { display: flex; align-items: center; gap: 12px; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #6B6B8A; }
+        .sd-row span:first-child { width: 80px; }
+        .sd-bar { height: 3px; background: rgba(0,245,255,0.4); border-radius: 2px; flex: 1; }
+        .sd-row span:last-child { width: 40px; text-align: right; }
+
+        /* LIVE AGENT SPECIFICS */
+        .top-bar { height: 64px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 16px; margin-bottom: 16px; }
+        .breadcrumb { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--text-secondary); }
+        .difficulty-badge-pill { font-size: 9px; padding: 2px 6px; letter-spacing: 0.1em; border-radius: 2px; font-family: 'JetBrains Mono', monospace; text-transform: uppercase; }
+        .difficulty-badge-pill.easy { background: rgba(0,255,148,0.1); border: 1px solid #00FF94; color: #00FF94; }
+        .difficulty-badge-pill.medium { background: rgba(255,184,0,0.1); border: 1px solid #FFB800; color: #FFB800; }
+        .difficulty-badge-pill.hard { background: rgba(255,59,92,0.1); border: 1px solid #FF3B5C; color: #FF3B5C; }
+
+        .controls { display: flex; gap: 12px; margin-bottom: 24px; }
+        .btn { background: transparent; border: 1px solid rgba(0,245,255,0.3); color: #00F5FF; font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.1em; padding: 8px 16px; cursor: pointer; transition: all 0.15s ease; position: relative; overflow: hidden; text-transform: uppercase; }
+        .btn:hover { background: rgba(0,245,255,0.08); border-color: #00F5FF; box-shadow: 0 0 16px rgba(0,245,255,0.2); }
+        .btn-run:hover::after { content: ''; position: absolute; top: 0; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(0,245,255,0.15), transparent); animation: shimmer 0.6s ease forwards; }
+
+        .email-card { background: var(--bg-surface); border: 1px solid var(--border); border-radius: 4px; padding: 24px; margin-bottom: 24px; font-family: 'JetBrains Mono', monospace; }
+        .email-card.urgency-critical { border-left: 3px solid #FF3B5C; animation: criticalPulse 1.8s ease-in-out infinite; }
+        .email-header-row { display: grid; grid-template-columns: 80px 1fr; margin-bottom: 8px; font-size: 12px; }
+        .email-label { color: var(--text-dim); text-transform: uppercase; }
+        .separator { height: 1px; background: var(--text-dim); margin: 16px 0; opacity: 0.3; }
+        .email-body { font-size: 14px; line-height: 1.6; white-space: pre-wrap; }
+
+        .reward-centering { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 12px; }
+        .progress-section { margin-bottom: 32px; }
+        .progress-labels { display: flex; justify-content: space-between; font-size: 9px; color: var(--text-dim); font-family: 'DM Mono', monospace; margin-bottom: 8px; }
+        .bar-container { height: 6px; background: rgba(0,245,255,0.08); border-radius: 2px; position: relative; }
+        .bar-fill { height: 100%; background: linear-gradient(90deg, rgba(0,245,255,0.6), #00F5FF); border-radius: 2px; position: relative; }
+        .bar-fill::after { content: ''; position: absolute; right: -1px; top: -3px; width: 4px; height: 12px; background: #00F5FF; box-shadow: 0 0 8px 2px rgba(0,245,255,0.8); border-radius: 2px; }
+
+        .action-panel { background: var(--bg-elevated); border: 1px solid var(--border); padding: 20px; margin-bottom: 24px; }
+        .action-field { display: grid; grid-template-columns: 100px 1fr; margin-bottom: 12px; font-family: 'DM Mono', monospace; font-size: 13px; opacity: 0; transform: translateX(-12px); }
+        .action-key { color: var(--text-dim); border-right: 1px solid var(--border); padding-right: 12px; }
+        .action-val { padding-left: 12px; color: var(--accent-cyan); }
+        .critical-text { color: #FF3B5C; font-weight: 700; animation: criticalTextPulse 1.5s ease-in-out infinite; }
+
+        .episode-log-section { margin-bottom: 24px; }
+        .log-container { height: 180px; overflow-y: auto; background: #09090F; border: 1px solid rgba(0,245,255,0.1); padding: 12px; font-family: 'JetBrains Mono', monospace; font-size: 12px; }
+        .log-line-env { display: flex; gap: 16px; color: #E8E8F0; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.04); animation: slideInUp 0.3s ease-out forwards; }
+        .log-step { color: rgba(0,245,255,0.4); min-width: 75px; }
+
+        /* RIGHT PANEL FIX */
+        .metrics-sidebar { width: var(--panel-right-width); border-left: 1px solid var(--border); background: var(--bg-surface); padding: 24px; display: flex; flex-direction: column; gap: 32px; flex-shrink: 0; }
+        .task-card { padding: 14px 16px; border: 1px solid rgba(0,245,255,0.1); background: #0F0F1A; margin-bottom: 8px; }
+        .task-card.active { border-color: rgba(0,245,255,0.45); box-shadow: 0 0 20px rgba(0,245,255,0.06); }
+        .task-row-1 { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+        .task-row-2 { display: flex; justify-content: space-between; font-family: 'DM Mono', monospace; font-size: 10px; margin-bottom: 8px; }
+        .task-row-3 { height: 3px; background: rgba(255,255,255,0.06); }
+        .task-progress-fill { height: 100%; transition: width 0.3s ease; }
+        .task-progress-fill.status-COMPLETED { background: #00FF94; box-shadow: 0 0 8px #00FF94; }
+        .task-progress-fill.status-ACTIVE { background: #00F5FF; box-shadow: 0 0 8px #00F5FF; }
+
+        /* SCROLLBARS */
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(0, 245, 255, 0.3); border-radius: 4px; }
+
+        /* SHARED BADGE CLASSES FOR CORPUS */
+        .badge-easy { font-size: 9px; padding: 2px 6px; letter-spacing: 0.1em; border-radius: 2px; font-family: 'JetBrains Mono', monospace; background: rgba(0,255,148,0.1); border: 1px solid #00FF94; color: #00FF94; }
+        .badge-medium { font-size: 9px; padding: 2px 6px; letter-spacing: 0.1em; border-radius: 2px; font-family: 'JetBrains Mono', monospace; background: rgba(255,184,0,0.1); border: 1px solid #FFB800; color: #FFB800; }
+        .badge-hard { font-size: 9px; padding: 2px 6px; letter-spacing: 0.1em; border-radius: 2px; font-family: 'JetBrains Mono', monospace; background: rgba(255,59,92,0.1); border: 1px solid #FF3B5C; color: #FF3B5C; }
+    </style>
+</head>
+<body>
+
+    <div id="boot-overlay">
+        <div id="boot-container"></div>
+    </div>
+
+    <div id="main-ui">
+        <aside class="sidebar">
+            <div class="logo-area">
+                <div class="logo-text">EmailTriageEnv <div class="cursor"></div></div>
+                <div class="version-badge">v1.0.0 // OPENENV</div>
+            </div>
+
+            <nav class="nav">
+                <div class="nav-item">Dashboard</div>
+                <div class="nav-item nav-active">Live Agent</div>
+                <div class="nav-item">Email Corpus</div>
+                <div class="nav-item">Grader Console</div>
+                <div class="nav-item">Metrics</div>
+            </nav>
+
+            <div class="status-block">
+                <div class="status-line"><div class="status-dot"></div> ENV STATUS: ONLINE</div>
+                <div class="status-line">SESSIONS: 01 ACTIVE</div>
+                <div class="status-line">TASKS LOADED: 15 / 15</div>
+            </div>
+            <div class="codenova">CODENOVA</div>
+        </aside>
+
+        <main class="main-panel">
+
+
+            <!-- PANEL: LIVE AGENT (STEP 2: WRAP EXISTING) -->
+            <div id="panel-live-agent" class="panel">
+                <header class="top-bar">
+                    <div class="breadcrumb">TASK_ID: email_triage_medium</div>
+                    <div id="difficulty-badge" class="difficulty-badge-pill medium" style="margin-left: 12px;">MEDIUM</div>
+                </header>
+
+                <section class="controls">
+                    <button class="btn btn-run">▶ Run Episode</button>
+                    <button id="step-btn" class="btn">⏭ Step</button>
+                    <button class="btn">↺ Reset</button>
+                    <button class="btn">⬇ Export Log</button>
+                </section>
+
+                <div class="env-feed">
+                    <article id="email-card" class="email-card urgency-critical">
+                        <div class="email-header-row"><span class="email-label">From</span><span class="email-value">sarah.kim@globex.io</span></div>
+                        <div class="email-header-row"><span class="email-label">To</span><span class="email-value">support@internal.com</span></div>
+                        <div class="email-header-row"><span class="email-label">Subject</span><span class="email-value">RE: API Integration failing after deploy</span></div>
+                        <div class="email-header-row"><span class="email-label">Date</span><span class="email-value">2024-03-15T09:42:00Z</span></div>
+                        <div class="email-header-row"><span class="email-label">Task</span><span id="email-task-label" class="email-value">email_triage_medium // STEP 2/5</span></div>
+                        <div class="separator"></div>
+                        <div class="email-body">Hi team, following up on my previous ticket. Our integration has been down for 6 hours now and we're losing $4k/hour. The 500 errors started after your deployment at 3pm EST. This is becoming a serious business issue — do I need to escalate to your CTO? - Sarah</div>
+                    </article>
+
+                    <div class="reward-centering">
+                        <div class="stat-block"><div class="stat-label">Step Reward</div><div id="step-reward-val" class="stat-value">+0.87</div></div>
+                        <div class="stat-block"><div class="stat-label">Total Reward</div><div id="total-reward-val" class="stat-value">1.62</div></div>
+                        <div class="stat-block"><div class="stat-label">Efficiency</div><div id="efficiency-val" class="stat-value">81.2%</div></div>
+                    </div>
+                    <div class="progress-section">
+                        <div class="progress-labels"><span>Episode Progress</span><span id="progress-text">1.62 / 2.0</span></div>
+                        <div class="bar-container"><div id="progress-fill" class="bar-fill" style="width: 81%;"></div></div>
+                    </div>
+
+                    <div class="action-panel">
+                        <div class="section-header">AGENT ACTION // LAST STEP</div>
+                        <div class="action-field"><span class="action-key">URGENCY</span><span id="action-urgency" class="action-val critical-text">critical</span></div>
+                        <div class="action-field"><span class="action-key">TEAM</span><span id="action-team" class="action-val">technical</span></div>
+                        <div class="action-field"><span class="action-key">REPLY</span><span id="action-reply" class="action-val" style="color:var(--text-primary); font-size:12px;">"We sincerely apologize for the disruption. Your case has been escalated to our senior engineering team with P0 priority. We will have an update within 30 minutes."</span></div>
+                        <div class="action-field"><span class="action-key">REASON</span><span id="action-reason" class="action-val" style="color:var(--text-secondary); font-size:11px;">"6-hour outage with $4k/hour loss and escalation threat indicates critical urgency. Technical team owns API issues."</span></div>
+                    </div>
+
+                    <div class="episode-log-section">
+                        <div class="section-header">EPISODE LOG // LIVE FEED</div>
+                        <div id="log-container" class="log-container">
+                            <div class="log-line-env"><span class="log-step">[STEP 01]</span><span>urgency=medium  team=technical  reward=+0.75  <span class="match-tag match-PARTIAL">△ PARTIAL</span></span></div>
+                            <div class="log-line-env"><span class="log-step">[STEP 02]</span><span>urgency=critical  team=technical  reward=+0.87  <span class="match-tag match-MATCH">✓ MATCH</span></span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 2: ADD 4 NEW PANELS -->
+            <div id="panel-dashboard" class="panel" style="display:none">
+                <div class="panel-header">DASHBOARD // SYSTEM OVERVIEW</div>
+                <div class="dash-grid">
+                    <div class="dash-card"><div class="dash-label">TOTAL EPISODES RUN</div><div class="dash-value" id="d-episodes">12</div></div>
+                    <div class="dash-card"><div class="dash-label">GLOBAL AVG SCORE</div><div class="dash-value" id="d-avg">0.57</div></div>
+                    <div class="dash-card"><div class="dash-label">BEST SCORE ACHIEVED</div><div class="dash-value" style="color:#00FF94" id="d-best">0.91</div></div>
+                    <div class="dash-card"><div class="dash-label">ENV UPTIME</div><div class="dash-value" id="d-uptime">00:00:00</div></div>
+                </div>
+                <div class="panel-section-title">TASK STATUS MATRIX</div>
+                <table class="status-table">
+                    <thead><tr><th>TASK_ID</th><th>DIFFICULTY</th><th>BEST_SCORE</th><th>EPISODES</th><th>STATUS</th></tr></thead>
+                    <tbody>
+                        <tr><td>email_triage_easy</td><td><span class="badge-easy">EASY</span></td><td style="color:#00FF94">0.72</td><td>5</td><td style="color:#00FF94">✓ COMPLETED</td></tr>
+                        <tr><td>email_triage_medium</td><td><span class="badge-medium">MEDIUM</span></td><td style="color:#00F5FF">0.51</td><td>5</td><td style="color:#00F5FF">◎ ACTIVE</td></tr>
+                        <tr><td>email_triage_hard</td><td><span class="badge-hard">HARD</span></td><td style="color:#3A3A5A">—</td><td>2</td><td style="color:#3A3A5A">○ PENDING</td></tr>
+                    </tbody>
+                </table>
+                <div class="panel-section-title">SYSTEM LOG</div>
+                <div class="sys-log" id="sys-log">
+                    <div class="log-line"><span class="log-time">[09:42:01]</span> ENV initialized successfully</div>
+                    <div class="log-line"><span class="log-time">[09:42:03]</span> Task corpus loaded: 15 emails</div>
+                    <div class="log-line"><span class="log-time">[09:42:05]</span> Session started: session_001</div>
+                    <div class="log-line"><span class="log-time">[09:43:12]</span> Task easy completed — score: 0.72</div>
+                    <div class="log-line"><span class="log-time">[09:44:30]</span> Task medium started — step 1/5</div>
+                    <div class="log-line"><span class="log-time">[09:45:01]</span> Step reward: +0.75 (PARTIAL match)</div>
+                    <div class="log-line"><span class="log-time">[09:45:44]</span> Step reward: +0.87 (EXACT match)</div>
+                </div>
+            </div>
+
+            <div id="panel-corpus" class="panel" style="display:none">
+                <div class="panel-header">EMAIL CORPUS // 15 SAMPLES LOADED</div>
+                <div class="corpus-filters">
+                    <button class="filter-btn active-filter" onclick="filterCorpus('all')">ALL (15)</button>
+                    <button class="filter-btn" onclick="filterCorpus('easy')">EASY (5)</button>
+                    <button class="filter-btn" onclick="filterCorpus('medium')">MEDIUM (5)</button>
+                    <button class="filter-btn" onclick="filterCorpus('hard')">HARD (5)</button>
+                </div>
+                <div class="corpus-list" id="corpus-list"></div>
+            </div>
+
+            <div id="panel-grader" class="panel" style="display:none">
+                <div class="panel-header">GRADER CONSOLE // SCORING ENGINE</div>
+                <div class="grader-grid">
+                    <div class="grader-card">
+                        <div class="grader-title">URGENCY SCORE MATRIX</div>
+                        <div class="grader-desc">Partial credit for adjacent levels. Weight: 35%</div>
+                        <table class="mini-table">
+                            <tr><th></th><th>low</th><th>med</th><th>high</th><th>crit</th></tr>
+                            <tr><td>low</td><td style="color:#00FF94">1.0</td><td style="color:#FFB800">0.6</td><td style="color:#FF6B35">0.2</td><td style="color:#FF3B5C">0.0</td></tr>
+                            <tr><td>med</td><td style="color:#FFB800">0.6</td><td style="color:#00FF94">1.0</td><td style="color:#FFB800">0.6</td><td style="color:#FF6B35">0.2</td></tr>
+                            <tr><td>high</td><td style="color:#FF6B35">0.2</td><td style="color:#FFB800">0.6</td><td style="color:#00FF94">1.0</td><td style="color:#FFB800">0.6</td></tr>
+                            <tr><td>crit</td><td style="color:#FF3B5C">0.0</td><td style="color:#FF6B35">0.2</td><td style="color:#FFB800">0.6</td><td style="color:#00FF94">1.0</td></tr>
+                        </table>
+                    </div>
+                    <div class="grader-card">
+                        <div class="grader-title">TEAM MATCH SCORING</div>
+                        <div class="grader-desc">Exact match = 0.35. Acceptable alternate = 0.15. Weight: 35%</div>
+                        <div class="team-row"><span class="match-exact">EXACT MATCH</span><span>+0.35</span></div>
+                        <div class="team-row"><span class="match-partial">ACCEPTABLE ALT</span><span>+0.15</span></div>
+                        <div class="team-row"><span class="match-none">WRONG TEAM</span><span>+0.00</span></div>
+                    </div>
+                    <div class="grader-card">
+                        <div class="grader-title">REPLY QUALITY SCORING</div>
+                        <div class="grader-desc">Keyword matching. share of 0.25. Weight: 25%</div>
+                        <div class="keyword-demo">
+                            <div class="kw-hit">✓ "apologize"</div><div class="kw-hit">✓ "escalated"</div><div class="kw-hit">✓ "priority"</div><div class="kw-hit">✓ "update"</div><div class="kw-miss">✗ "timeline"</div>
+                        </div>
+                        <div style="color:#00F5FF;font-size:11px;margin-top:8px">SCORE: 4/5 keywords = 0.20 / 0.25</div>
+                    </div>
+                    <div class="grader-card">
+                        <div class="grader-title">REASONING BONUS</div>
+                        <div class="grader-desc">+0.05 if reasoning field contains > 20 chars.</div>
+                        <div style="margin-top:12px">
+                            <div class="team-row"><span>LENGTH > 20 chars</span><span style="color:#00FF94">+0.05</span></div>
+                            <div class="team-row"><span>LENGTH ≤ 20 chars</span><span style="color:#FF3B5C">+0.00</span></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-section-title">LAST GRADER OUTPUT</div>
+                <div class="grader-output">
+                    <div>> urgency_score: 1.0 × 0.35 = <span style="color:#00FF94">0.350</span></div>
+                    <div>> team_score: exact_match × 0.35 = <span style="color:#00FF94">0.350</span></div>
+                    <div>> reply_score: 4/5 keywords × 0.25 = <span style="color:#FFB800">0.200</span></div>
+                    <div>> reasoning_bonus: len=89 > 20 = <span style="color:#00FF94">0.050</span></div>
+                    <div class="grader-total">> TOTAL: <span style="color:#00F5FF">0.950</span> / 1.0</div>
+                </div>
+            </div>
+
+            <div id="panel-metrics" class="panel" style="display:none">
+                <div class="panel-header">METRICS // PERFORMANCE ANALYSIS</div>
+                <div class="panel-section-title">REWARD HISTORY — LAST 12 EPISODES</div>
+                <div class="bar-chart">
+                    <div class="chart-bar" style="height:72%"><span class="bar-val">0.72</span></div>
+                    <div class="chart-bar" style="height:45%"><span class="bar-val">0.45</span></div>
+                    <div class="chart-bar" style="height:58%"><span class="bar-val">0.58</span></div>
+                    <div class="chart-bar" style="height:81%"><span class="bar-val">0.81</span></div>
+                    <div class="chart-bar" style="height:63%"><span class="bar-val">0.63</span></div>
+                    <div class="chart-bar" style="height:91%"><span class="bar-val">0.91</span></div>
+                    <div class="chart-bar" style="height:55%"><span class="bar-val">0.55</span></div>
+                    <div class="chart-bar" style="height:69%"><span class="bar-val">0.69</span></div>
+                    <div class="chart-bar" style="height:74%"><span class="bar-val">0.74</span></div>
+                    <div class="chart-bar" style="height:48%"><span class="bar-val">0.48</span></div>
+                    <div class="chart-bar" style="height:83%"><span class="bar-val">0.83</span></div>
+                    <div class="chart-bar active-bar" style="height:81%"><span class="bar-val">0.81</span></div>
+                </div>
+                <div class="panel-section-title">PER-TASK BREAKDOWN</div>
+                <div class="metrics-breakdown">
+                    <div class="mb-row"><span class="mb-label">EASY_TRIAGE</span><div class="mb-bar-wrap"><div class="mb-bar" style="width:72%;background:#00FF94;box-shadow:0 0 8px rgba(0,255,148,0.5)"></div></div><span class="mb-val" style="color:#00FF94">0.72</span></div>
+                    <div class="mb-row"><span class="mb-label">MEDIUM_CONTEXT</span><div class="mb-bar-wrap"><div class="mb-bar" style="width:51%;background:#00F5FF;box-shadow:0 0 8px rgba(0,245,255,0.5)"></div></div><span class="mb-val" style="color:#00F5FF">0.51</span></div>
+                    <div class="mb-row"><span class="mb-label">HARD_THREADS</span><div class="mb-bar-wrap"><div class="mb-bar" style="width:0%;background:#FF3B5C"></div></div><span class="mb-val" style="color:#3A3A5A">—</span></div>
+                </div>
+                <div class="panel-section-title">SCORE DISTRIBUTION</div>
+                <div class="score-dist">
+                    <div class="sd-row"><span>0.9 – 1.0</span><div class="sd-bar" style="width:17%"></div><span>2 eps</span></div>
+                    <div class="sd-row"><span>0.7 – 0.9</span><div class="sd-bar" style="width:50%"></div><span>6 eps</span></div>
+                    <div class="sd-row"><span>0.5 – 0.7</span><div class="sd-bar" style="width:25%"></div><span>3 eps</span></div>
+                    <div class="sd-row"><span>0.0 – 0.5</span><div class="sd-bar" style="width:8%"></div><span>1 ep</span></div>
+                </div>
+            </div>
+        </main>
+
+        <!-- SIDEBAR PANEL RIGHT -->
+        <aside class="metrics-sidebar">
+            <section>
+                <div class="section-header">TASK OVERVIEW</div>
+                <div class="task-card">
+                    <div class="task-row-1"><span class="task-name">EASY_TRIAGE</span><span class="difficulty-badge-pill easy">EASY</span></div>
+                    <div class="task-row-2"><span>SCORE: 0.72</span><span class="status-COMPLETED">✓ COMPLETED</span></div>
+                    <div class="task-row-3"><div class="task-progress-fill status-COMPLETED" style="width: 72%;"></div></div>
+                </div>
+                <div id="task-medium" class="task-card active">
+                    <div class="task-row-1"><span class="task-name">MEDIUM_CONTEXT</span><span class="difficulty-badge-pill medium">MEDIUM</span></div>
+                    <div class="task-row-2"><span id="task-medium-score">SCORE: 0.51</span><span id="task-medium-status" class="status-ACTIVE">ACTIVE</span></div>
+                    <div class="task-row-3"><div id="task-medium-bar" class="task-progress-fill status-ACTIVE" style="width: 51%;"></div></div>
+                </div>
+                <div class="task-card">
+                    <div class="task-row-1"><span class="task-name">HARD_THREADS</span><span class="difficulty-badge-pill hard">HARD</span></div>
+                    <div class="task-row-2"><span>SCORE: ---</span><span class="status-PENDING">PENDING</span></div>
+                    <div class="task-row-3"><div class="task-progress-fill status-PENDING" style="width: 0%;"></div></div>
+                </div>
+            </section>
+
+            <section>
+                <div class="section-header">LIVE METRICS</div>
+                <div class="stat-grid">
+                    <div class="stat-box"><div class="stat-val">0.57</div><div class="stat-label">Avg Score</div></div>
+                    <div class="stat-box"><div class="stat-val">0.91</div><div class="stat-label">Best Score</div></div>
+                    <div class="stat-box"><div class="stat-val">12</div><div class="stat-label">Episodes</div></div>
+                    <div class="stat-box"><div class="stat-val">4.2</div><div class="stat-label">Steps/EP</div></div>
+                </div>
+            </section>
+
+            <section>
+                <div class="section-header">GRADING BREAKDOWN</div>
+                <div class="grading-row">
+                    <div class="grading-label"><span>URGENCY MATCH</span> <span style="color:var(--accent-amber);">78%</span></div>
+                    <div class="grading-bar">████████░░</div>
+                </div>
+                <div class="grading-row">
+                    <div class="grading-label"><span>TEAM MATCH</span> <span style="color:var(--accent-amber);">61%</span></div>
+                    <div class="grading-bar">██████░░░░</div>
+                </div>
+                <div class="grading-row">
+                    <div class="grading-label"><span>REPLY QUALITY</span> <span style="color:var(--accent-amber);">52%</span></div>
+                    <div class="grading-bar">█████░░░░░</div>
+                </div>
+            </section>
+        </aside>
+    </div>
+
+    <script>
+        // ──────────────────────────────────────────────────────────────────────────────
+        // UTILS
+        // ──────────────────────────────────────────────────────────────────────────────
+        function animateCounter(element, from, to, duration, prefix='', suffix='') {
+            if (!element) return;
+            const start = performance.now();
+            const update = (time) => {
+                const elapsed = time - start;
+                const progress = Math.min(elapsed / duration, 1);
+                const eased = 1 - Math.pow(1 - progress, 3);
+                const current = from + (to - from) * eased;
+                element.textContent = prefix + current.toFixed(2) + suffix;
+                if (progress < 1) requestAnimationFrame(update);
+                else element.textContent = prefix + to.toFixed(2) + suffix;
+            };
+            requestAnimationFrame(update);
+        }
+
+        function triggerActionAnimations() {
+            document.querySelectorAll('.action-field').forEach((el, i) => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateX(-12px)';
+                el.style.transition = `all 0.2s ease ${i * 80}ms`;
+                setTimeout(() => { el.style.opacity = '1'; el.style.transform = 'translateX(0)'; }, 50);
+            });
+        }
+
+        // ──────────────────────────────────────────────────────────────────────────────
+        // BOOT SEQUENCE
+        // ──────────────────────────────────────────────────────────────────────────────
+        const bootLines = [
+            "> INITIALIZING EmailTriageEnv v1.0.0...",
+            "> LOADING TASK CORPUS............ [15/15] ✓",
+            "> CONNECTING TO OPENENV RUNTIME.. ✓",
+            "> CALIBRATING REWARD FUNCTIONS... ✓",
+            "> ENV STATUS: ONLINE",
+            "> LAUNCHING INTERFACE..."
+        ];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const overlay = document.getElementById('boot-overlay');
+            const container = document.getElementById('boot-container');
+            const main = document.getElementById('main-ui');
+            
+            main.style.opacity = '0';
+
+            bootLines.forEach((line, i) => {
+                setTimeout(() => {
+                    const el = document.createElement('div');
+                    el.textContent = line;
+                    el.style.cssText = 'opacity:0; transform:translateX(-8px); transition: all 0.25s ease; margin-bottom: 8px;';
+                    container.appendChild(el);
+                    requestAnimationFrame(() => { el.style.opacity = '1'; el.style.transform = 'translateX(0)'; });
+                }, i * 350);
+            });
+
+            setTimeout(() => {
+                overlay.style.opacity = '0';
+                overlay.style.transition = 'opacity 0.4s ease';
+                main.style.opacity = '1';
+                main.style.transition = 'opacity 0.4s ease';
+                setTimeout(() => {
+                    overlay.remove();
+                    setTimeout(() => {
+                        animateCounter(document.getElementById('step-reward-val'), 0, 0.87, 600, '+');
+                        animateCounter(document.getElementById('total-reward-val'), 0, 1.62, 800);
+                        animateCounter(document.getElementById('efficiency-val'), 0, 81.2, 700, '', '%');
+                        triggerActionAnimations();
+                    }, 400);
+                }, 400);
+            }, bootLines.length * 350 + 600);
+        });
+
+        // ──────────────────────────────────────────────────────────────────────────────
+        // STEP 4: JS — NAV SWITCHING + DATA
+        // ──────────────────────────────────────────────────────────────────────────────
+        const navMap = {
+            'DASHBOARD':      'panel-dashboard',
+            'LIVE AGENT':     'panel-live-agent',
+            'EMAIL CORPUS':   'panel-corpus',
+            'GRADER CONSOLE': 'panel-grader',
+            'METRICS':        'panel-metrics',
+        };
+
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', () => {
+                document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('nav-active'));
+                item.classList.add('nav-active');
+                
+                document.querySelectorAll('.panel').forEach(p => p.style.display = 'none');
+                
+                const targetId = navMap[item.textContent.trim().toUpperCase()];
+                const target = document.getElementById(targetId);
+                if (target) {
+                    target.style.display = 'block';
+                    target.style.opacity = '0';
+                    target.style.transition = 'opacity 0.2s ease';
+                    requestAnimationFrame(() => { target.style.opacity = '1'; });
+                }
+            });
+        });
+
+        const corpusEmails = [
+            { id:'easy_001', difficulty:'easy', subject:'Wrong invoice amount', sender:'john.doe@client.com', urgency:'medium', team:'billing' },
+            { id:'easy_002', difficulty:'easy', subject:'Password reset request', sender:'user123@gmail.com', urgency:'low', team:'technical' },
+            { id:'easy_003', difficulty:'easy', subject:'Request for product demo', sender:'lead@startup.io', urgency:'low', team:'sales' },
+            { id:'easy_004', difficulty:'easy', subject:'Vacation request approval', sender:'employee@company.com', urgency:'low', team:'hr' },
+            { id:'easy_005', difficulty:'easy', subject:'Contract renewal reminder', sender:'legal@partner.com', urgency:'medium', team:'legal' },
+            { id:'medium_001', difficulty:'medium', subject:'RE: API Integration failing after deploy', sender:'sarah.kim@globex.io', urgency:'critical', team:'technical' },
+            { id:'medium_002', difficulty:'medium', subject:'Fwd: Payment declined again?', sender:'cfo@enterprise.com', urgency:'high', team:'billing' },
+            { id:'medium_003', difficulty:'medium', subject:'Quick question about your SLA', sender:'ops@bigclient.com', urgency:'high', team:'management' },
+            { id:'medium_004', difficulty:'medium', subject:'Team restructure feedback', sender:'anon@company.com', urgency:'medium', team:'hr' },
+            { id:'medium_005', difficulty:'medium', subject:'Compliance audit next week', sender:'auditor@gov.org', urgency:'high', team:'legal' },
+            { id:'hard_001', difficulty:'hard', subject:'[Thread] Billing → Legal escalation', sender:'cto@acmecorp.com', urgency:'high', team:'legal' },
+            { id:'hard_002', difficulty:'hard', subject:'[Thread] Support → Management escalation', sender:'pm@megacorp.com', urgency:'critical', team:'management' },
+            { id:'hard_003', difficulty:'hard', subject:'[Thread] Sales → Technical handoff', sender:'enterprise@client.com', urgency:'high', team:'technical' },
+            { id:'hard_004', difficulty:'hard', subject:'[Thread] HR → Legal sensitive matter', sender:'hr@internal.com', urgency:'high', team:'legal' },
+            { id:'hard_005', difficulty:'hard', subject:'[Thread] Infra outage chain', sender:'oncall@ops.com', urgency:'critical', team:'technical' },
+        ];
+
+        function renderCorpus(filter = 'all') {
+            const list = document.getElementById('corpus-list');
+            if (!list) return;
+            list.innerHTML = '';
+            const filtered = filter === 'all' ? corpusEmails : corpusEmails.filter(e => e.difficulty === filter);
+            filtered.forEach(email => {
+                const div = document.createElement('div');
+                div.className = 'corpus-email';
+                const badgeClass = `badge-${email.difficulty}`;
+                div.innerHTML = `<div class="corpus-email-meta"><div class="corpus-subject">${email.subject}</div><div class="corpus-sender">${email.sender}</div></div><div style="display:flex;gap:8px;align-items:center"><span style="font-family:'JetBrains Mono';font-size:10px;color:#6B6B8A">${email.urgency} / ${email.team}</span><span class="${badgeClass}">${email.difficulty.toUpperCase()}</span></div>`;
+                list.appendChild(div);
+            });
+        }
+        renderCorpus();
+
+        window.filterCorpus = (filter) => {
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active-filter'));
+            event.target.classList.add('active-filter');
+            renderCorpus(filter);
+        };
+
+        const startTime = Date.now();
+        setInterval(() => {
+            const el = document.getElementById('d-uptime');
+            if (!el) return;
+            const elapsed = Math.floor((Date.now() - startTime) / 1000);
+            const h = String(Math.floor(elapsed/3600)).padStart(2,'0');
+            const m = String(Math.floor((elapsed%3600)/60)).padStart(2,'0');
+            const s = String(elapsed%60).padStart(2,'0');
+            el.textContent = `${h}:${m}:${s}`;
+        }, 1000);
+
+        // ──────────────────────────────────────────────────────────────────────────────
+        // STEP BUTTON WIRING
+        // ──────────────────────────────────────────────────────────────────────────────
+        const steps = [
+            { urgency:'medium', team:'technical', reward:0.75, match:'PARTIAL', reason:'Standard inquiry, correctly assigned.', reply:'Technical team is reviewing.' },
+            { urgency:'critical', team:'technical', reward:0.87, match:'MATCH', reason:'6-hour outage indicated critical priority.', reply:'Escalated to senior engineering, update in 30m.' },
+            { urgency:'critical', team:'legal', reward:0.91, match:'MATCH', reason:'Threat of escalation to counsel detected.', reply:'Shared with legal department for immediate review.' },
+        ];
+        let currentStepNum = 2;
+        const stepBtn = document.getElementById('step-btn');
+        stepBtn.addEventListener('click', () => {
+            if (currentStepNum >= steps.length) {
+                stepBtn.style.color = 'var(--accent-amber)'; stepBtn.textContent = 'EPISODE COMPLETE';
+                setTimeout(() => { stepBtn.style.color = 'var(--accent-cyan)'; stepBtn.textContent = '⏭ Step'; }, 1000);
+                return;
+            }
+            const step = steps[currentStepNum];
+            currentStepNum++;
+            const logDiv = document.createElement('div');
+            logDiv.className = 'log-line-env';
+            logDiv.innerHTML = `<span class="log-step">[STEP ${String(currentStepNum).padStart(2, '0')}]</span><span>urgency=${step.urgency} team=${step.team} reward=+${step.reward.toFixed(2)} <span class="match-tag match-${step.match}">${step.match === 'MATCH' ? '✓ MATCH' : '△ PARTIAL'}</span></span>`;
+            document.getElementById('log-container').appendChild(logDiv);
+            document.getElementById('log-container').scrollTop = document.getElementById('log-container').scrollHeight;
+
+            const prevTotal = parseFloat(document.getElementById('total-reward-val').textContent);
+            animateCounter(document.getElementById('total-reward-val'), prevTotal, prevTotal + step.reward, 500);
+            animateCounter(document.getElementById('step-reward-val'), 0, step.reward, 400, '+');
+            document.getElementById('progress-fill').style.width = ((prevTotal + step.reward) / 2.0 * 100) + '%';
+            document.getElementById('progress-text').textContent = (prevTotal + step.reward).toFixed(2) + ' / 2.0';
+            
+            document.getElementById('action-urgency').textContent = step.urgency;
+            document.getElementById('action-team').textContent = step.team;
+            document.getElementById('action-reply').textContent = `"${step.reply}"`;
+            document.getElementById('action-reason').textContent = `"${step.reason}"`;
+            document.getElementById('email-card').className = `email-card urgency-${step.urgency}`;
+            document.getElementById('email-task-label').textContent = `email_triage_medium // STEP ${currentStepNum}/5`;
+            triggerActionAnimations();
+
+            if (currentStepNum === 3) {
+                document.getElementById('task-medium-score').textContent = 'SCORE: ' + (prevTotal + step.reward).toFixed(2);
+                document.getElementById('task-medium-status').textContent = 'COMPLETED';
+                document.getElementById('task-medium-status').className = 'status-COMPLETED';
+                document.getElementById('task-medium-bar').className = 'task-progress-fill status-COMPLETED';
+                document.getElementById('task-medium-bar').style.width = '100%';
+                document.getElementById('task-medium').classList.remove('active');
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,127 @@
+[
+  {
+    "email_id": "medium_001",
+    "subject": "quick question about the API lol",
+    "body": "hey team,\n\nnot sure if this is the right place to ask but our whole checkout flow is broken in prod. customers are getting 500 errors when they try to pay. we've been losing sales for the past 2 hours and nobody on our end knows why. we didn't deploy anything new today.\n\nwe're a mid-size e-commerce company doing around $45k/day in transactions so this is kinda costing us a lot lol\n\njust wanted to flag it, hope someone can check it out soon 🙏\n\ncheers\nTyler Kimura\nHead of Engineering, Bramblewick Co\ntyler@bramblewick.co",
+    "sender": "tyler@bramblewick.co",
+    "timestamp": "2024-03-16T14:22:00Z",
+    "ground_truth": {
+      "urgency": "critical",
+      "team": "technical",
+      "acceptable_teams": ["management"],
+      "grading_notes": "TRAP: Casual tone ('lol', 'kinda', emoji) masks a production-down scenario with $45k/day revenue impact. The subject line is deliberately misleading. A weak model will classify this as 'medium' based on tone; a strong model reads the content and sees: production 500 errors, 2 hours of customer-facing downtime, active revenue loss → critical urgency, technical team.",
+      "reply_keywords": {
+        "mandatory": ["investigating", "priority", "production"],
+        "important": ["escalate", "checkout", "500", "immediately", "team"],
+        "bonus": ["revenue", "downtime", "incident", "update", "status"]
+      },
+      "reply_rubric": {
+        "must_treat_as_critical": "Reply must NOT mirror the casual tone — it must convey urgency",
+        "must_acknowledge_impact": "Reference revenue loss or production outage",
+        "must_state_immediate_action": "Say the issue is being investigated right now",
+        "must_promise_updates": "Offer a timeline for next status update",
+        "tone": "Urgent and reassuring, NOT casual"
+      }
+    }
+  },
+  {
+    "email_id": "medium_002",
+    "subject": "Feedback on your platform",
+    "body": "Hello,\n\nI've been a loyal paying customer for 3 years and I've generally been happy with the service. I wanted to share some constructive feedback.\n\nThe new dashboard update you rolled out last Tuesday broke the custom report export feature. This is the feature I use every single day to generate regulatory compliance reports for my board of directors. Without it, I physically cannot produce the documents required by our financial regulator. My next mandatory filing deadline is this Friday.\n\nI assumed the bug would be patched quickly, but it's now been 5 business days with no fix and no communication. I've been generating reports manually in Excel as a workaround, but it takes 4 hours per report instead of 10 minutes.\n\nI manage a 200-seat enterprise account (annual contract value ~$180,000). I've started evaluating two competitors this week. I need to know today whether this will be fixed before Friday or I will begin our migration process.\n\nAnna Blackwood\nChief Compliance Officer\nMeridian Financial Group\na.blackwood@meridianfinancial.com",
+    "sender": "a.blackwood@meridianfinancial.com",
+    "timestamp": "2024-03-14T08:55:00Z",
+    "ground_truth": {
+      "urgency": "critical",
+      "team": "technical",
+      "acceptable_teams": ["management"],
+      "grading_notes": "TRAP: Subject says 'feedback' and tone is measured/professional, but content reveals: (1) production feature broken for 5 days, (2) regulatory compliance deadline Friday, (3) $180k account threatening to churn, (4) already evaluating competitors. This is a churn-risk escalation disguised as feedback. Critical urgency because of legal/regulatory deadline + revenue at risk.",
+      "reply_keywords": {
+        "mandatory": ["fix", "priority", "deadline"],
+        "important": ["compliance", "export", "escalate", "apologize", "urgent"],
+        "bonus": ["Friday", "engineering", "workaround", "account manager", "update"]
+      },
+      "reply_rubric": {
+        "must_apologize_for_delay": "5 days without communication is unacceptable — acknowledge this",
+        "must_escalate_explicitly": "State that engineering is being escalated or already working on it",
+        "must_reference_friday_deadline": "Show awareness of the regulatory deadline",
+        "must_address_churn_risk": "Acknowledge the account value or competitive evaluation implicitly",
+        "tone": "Apologetic, urgent, executive-level"
+      }
+    }
+  },
+  {
+    "email_id": "medium_003",
+    "subject": "Just wanted to check something",
+    "body": "Hi,\n\nThis might be nothing and I don't want to waste anyone's time, but I noticed something odd and figured I should mention it just in case.\n\nYesterday evening around 9:30pm GMT I logged into the platform from my home laptop. Everything loaded normally at first, but for about 2-3 seconds I could clearly see another user's account dashboard — their name was \"Sarah Kim, Oakfield Industries\" and I could see their project list, team members, and what looked like billing information (a partial credit card number ending in 4829).\n\nThen the page refreshed and my own account loaded correctly. I didn't screenshot it because it happened fast, but I'm 100% certain of what I saw. It hasn't happened again since.\n\nIs this a known display bug? I'm not worried about my own account, I just thought you should know in case there's a caching issue or something.\n\nThanks,\nRaj Anand\nPartner Solutions Manager\nraj.anand@partnerorg.net",
+    "sender": "raj.anand@partnerorg.net",
+    "timestamp": "2024-03-15T11:30:00Z",
+    "ground_truth": {
+      "urgency": "critical",
+      "team": "technical",
+      "acceptable_teams": ["management", "legal"],
+      "grading_notes": "TRAP: Reporter explicitly downplays the issue ('might be nothing', 'display bug', 'caching issue') but has described a cross-tenant data leak. Another user's name, project list, team members, and PARTIAL CREDIT CARD NUMBER were exposed. This is: (1) a potential data breach, (2) a PCI-DSS violation (credit card exposure), (3) potentially GDPR-reportable. The agent must look past the reporter's casual framing and recognize the severity.",
+      "reply_keywords": {
+        "mandatory": ["security", "investigate", "immediately"],
+        "important": ["data", "breach", "privacy", "escalate", "another user"],
+        "bonus": ["PCI", "credit card", "cross-tenant", "incident", "compliance", "legal"]
+      },
+      "reply_rubric": {
+        "must_not_dismiss_as_bug": "Must NOT say 'thanks for the feedback, we'll look into it'",
+        "must_frame_as_security_incident": "Explicitly use words like security, incident, data exposure",
+        "must_state_immediate_investigation": "This should be treated as a P0/immediate investigation",
+        "must_thank_reporter": "Acknowledge that reporting this was the right thing to do",
+        "tone": "Serious, grateful, urgent — not alarmist"
+      }
+    }
+  },
+  {
+    "email_id": "medium_004",
+    "subject": "Re: Partnership enquiry",
+    "body": "Hi Marketing,\n\nThanks for sending over the co-marketing proposal last week — our BD team was genuinely excited about the joint webinar series and the lead-sharing arrangement. The commercial terms look fair.\n\nHowever, our General Counsel reviewed the draft agreement yesterday and flagged a significant issue. Section 4.2 contains a non-compete / exclusivity clause stating that Strata Partners \"shall not engage, promote, or integrate with any competing analytics platform\" for 60 months (5 years) from the date of signing.\n\nA 5-year exclusivity lock-in is a non-starter for us. We work with 12 analytics vendors across our portfolio companies and this clause would jeopardize those relationships. We suspect this may be a template clause rather than intentional, but our legal team has advised us not to sign anything until it's addressed.\n\nWe'd love to move forward — can we schedule a call with your legal team this week to negotiate revised terms? Our GC, Robert Huang, is available Tuesday or Thursday afternoon.\n\nBest,\nCaroline Wynn\nBD Director, Strata Partners\ncaroline.wynn@stratapartners.com",
+    "sender": "caroline.wynn@stratapartners.com",
+    "timestamp": "2024-03-12T17:10:00Z",
+    "ground_truth": {
+      "urgency": "high",
+      "team": "legal",
+      "acceptable_teams": ["sales", "management"],
+      "grading_notes": "TRAP: The subject says 'partnership enquiry' and the tone is friendly/collaborative, but the core issue is a CONTRACT CLAUSE DISPUTE requiring legal review. Section 4.2 exclusivity for 5 years is a material legal term. This isn't a sales or marketing issue anymore — it's a legal review of contract terms. High urgency because the deal is warm but will die if legal doesn't engage quickly.",
+      "reply_keywords": {
+        "mandatory": ["legal", "review", "clause"],
+        "important": ["exclusivity", "terms", "contract", "schedule", "team"],
+        "bonus": ["Section 4.2", "non-compete", "General Counsel", "partnership", "negotiate"]
+      },
+      "reply_rubric": {
+        "must_route_to_legal": "Explicitly state legal team involvement",
+        "must_acknowledge_the_specific_clause": "Reference the exclusivity or Section 4.2",
+        "must_keep_deal_alive": "Express continued interest in the partnership",
+        "must_propose_concrete_next_step": "Suggest scheduling the legal call they requested",
+        "tone": "Collaborative, responsive, solution-oriented"
+      }
+    }
+  },
+  {
+    "email_id": "medium_005",
+    "subject": "Slight issue with payroll this month",
+    "body": "Hey,\n\nSo my payslip for March came through this morning and it looks like my overtime from the last two pay periods wasn't included. According to my tracked hours (approved by my manager in Workday), I worked 38 hours of overtime across Feb 19-Mar 15 at time-and-a-half, which comes to roughly £1,400 pre-tax.\n\nI know payroll can be complex with the new system migration so I assume it was just an oversight, no worries.\n\nOne thing worth mentioning though — I'm going on maternity leave starting next Monday (March 25th). My statutory maternity pay calculations will be based on my average earnings over the 8-week reference period, which includes this pay period. So if the overtime isn't corrected before I go on leave, it could reduce my SMP for the entire 39-week maternity period.\n\nIf it can be sorted before Friday's payroll cutoff that would be perfect. Otherwise I might need to involve ACAS because the SMP calculation error would compound over 9 months.\n\nCheers,\nNaomi Blackburn\nSenior Account Manager\nnaomi.blackburn@company.co.uk",
+    "sender": "naomi.blackburn@company.co.uk",
+    "timestamp": "2024-03-18T09:20:00Z",
+    "ground_truth": {
+      "urgency": "high",
+      "team": "hr",
+      "acceptable_teams": ["billing", "management"],
+      "grading_notes": "TRAP: Subject says 'slight issue' and tone is casual ('no worries', 'cheers') but the actual stakes are high: (1) £1,400 missing overtime, (2) maternity leave starts in 5 business days, (3) if uncorrected, the error compounds into 39 weeks of reduced statutory maternity pay, (4) employee mentions ACAS (employment advisory service — implicit legal threat). The time pressure is the Friday payroll cutoff. HR owns payroll corrections.",
+      "reply_keywords": {
+        "mandatory": ["payroll", "overtime", "correct"],
+        "important": ["maternity", "priority", "Friday", "before", "urgency"],
+        "bonus": ["SMP", "payslip", "cutoff", "ACAS", "reference period", "escalate"]
+      },
+      "reply_rubric": {
+        "must_acknowledge_overtime_error": "Confirm they're looking at the missing £1,400",
+        "must_understand_maternity_implications": "Show awareness that this impacts SMP calculations",
+        "must_commit_to_friday_deadline": "Promise correction before the payroll cutoff",
+        "must_not_be_dismissive": "Must NOT mirror the casual 'no worries' tone — this is urgent",
+        "tone": "Professional, empathetic, urgent"
+      }
+    }
+  }
+]

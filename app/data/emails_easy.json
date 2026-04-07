@@ -1,0 +1,121 @@
+[
+  {
+    "email_id": "easy_001",
+    "subject": "Invoice #INV-2024-1892 overcharge — $160 discrepancy",
+    "body": "Hi Support Team,\n\nI just received my invoice #INV-2024-1892 for the March billing cycle. The total shows $540.00 but according to my service agreement (signed Oct 2023, Professional tier, 10 seats) it should be $380.00.\n\nI cross-checked the line items and the difference appears to come from an \"Add-on: Premium Analytics\" charge of $160 that I never authorised. I don't use the analytics dashboard and have never enabled it.\n\nCould you please review and issue a corrected invoice or credit note? I'd like this resolved before our quarterly budget reconciliation closes on March 22nd.\n\nThanks,\nJohn Mercer\nFinance Lead, Acme Corp\njohn.mercer@acmecorp.com",
+    "sender": "john.mercer@acmecorp.com",
+    "timestamp": "2024-03-15T09:30:00Z",
+    "ground_truth": {
+      "urgency": "medium",
+      "team": "billing",
+      "acceptable_teams": ["management"],
+      "grading_notes": "Clear billing dispute with specific invoice reference and dollar amounts. No service outage, no legal threat — medium urgency. Billing team owns invoice corrections.",
+      "reply_keywords": {
+        "mandatory": ["invoice", "review", "correct"],
+        "important": ["credit", "billing", "overcharge", "apologize"],
+        "bonus": ["24 hours", "analytics", "$160", "reconciliation"]
+      },
+      "reply_rubric": {
+        "must_acknowledge_specific_issue": "Reference the invoice number or the $160 discrepancy",
+        "must_state_resolution_path": "Mention reviewing the charge / issuing credit",
+        "must_set_timeline": "Give a concrete timeframe for resolution",
+        "tone": "Professional, apologetic for the inconvenience"
+      }
+    }
+  },
+  {
+    "email_id": "easy_002",
+    "subject": "Annual leave request — April 14-18",
+    "body": "Hello HR,\n\nI would like to formally request 5 vacation days from Monday April 14th through Friday April 18th, 2024.\n\nDetails:\n- Employee ID: EMP-4821\n- Department: Design\n- Manager: Sarah Chen (she has verbally approved)\n- Remaining annual leave balance: 12 days\n- Coverage: Jake Torres will handle my active projects\n\nI've already updated the team calendar. Please confirm once the leave is processed in the HRIS system.\n\nBest regards,\nMarcus Webb\nSenior Designer",
+    "sender": "marcus.webb@company.com",
+    "timestamp": "2024-03-14T14:15:00Z",
+    "ground_truth": {
+      "urgency": "low",
+      "team": "hr",
+      "acceptable_teams": ["management"],
+      "grading_notes": "Standard leave request with full documentation, manager pre-approval, and coverage arranged. Zero time pressure, zero risk. Textbook low urgency, HR team.",
+      "reply_keywords": {
+        "mandatory": ["leave", "request", "confirmed"],
+        "important": ["vacation", "approved", "HR", "processed"],
+        "bonus": ["April", "balance", "system", "calendar"]
+      },
+      "reply_rubric": {
+        "must_acknowledge_request": "Confirm receipt of the leave dates",
+        "must_confirm_or_outline_next_steps": "State whether approved or what approval steps remain",
+        "tone": "Warm, routine"
+      }
+    }
+  },
+  {
+    "email_id": "easy_003",
+    "subject": "Enterprise plan inquiry — 85-seat upgrade from Professional",
+    "body": "Good morning,\n\nI'm Diana Flores, CTO at Nexus Analytics. We've been on your Professional tier (25 seats) for 18 months and are very happy with the product.\n\nOur engineering team has grown to 85 people and we're hitting plan limits on API calls and storage. We'd like to explore your Enterprise plan. Specifically:\n\n1. Pricing for 85 seats with annual commitment\n2. Custom SSO integration (we use Okta)\n3. Dedicated account manager availability\n4. Data residency options (we need EU hosting under GDPR)\n\nOur procurement budget cycle closes end of Q1 (March 31st), so we'd need a proposal within 2 weeks to get internal sign-off.\n\nRegards,\nDiana Flores\nCTO, Nexus Analytics\ndiana.flores@nexusanalytics.io",
+    "sender": "diana.flores@nexusanalytics.io",
+    "timestamp": "2024-03-13T11:00:00Z",
+    "ground_truth": {
+      "urgency": "medium",
+      "team": "sales",
+      "acceptable_teams": ["management"],
+      "grading_notes": "Warm enterprise sales lead with time pressure (Q1 budget close). Not urgent in the support sense, but commercially time-sensitive. Sales team handles plan upgrades and pricing.",
+      "reply_keywords": {
+        "mandatory": ["enterprise", "pricing", "contact"],
+        "important": ["upgrade", "sales", "proposal", "account manager"],
+        "bonus": ["SSO", "Okta", "GDPR", "demo", "schedule", "Q1"]
+      },
+      "reply_rubric": {
+        "must_acknowledge_interest": "Thank them for considering the upgrade",
+        "must_offer_concrete_next_step": "Schedule a call, assign an account rep, or promise a proposal",
+        "must_respect_timeline": "Reference their Q1 deadline or 2-week window",
+        "tone": "Enthusiastic but professional"
+      }
+    }
+  },
+  {
+    "email_id": "easy_004",
+    "subject": "LOCKED OUT — can't access account, password reset broken",
+    "body": "Hi,\n\nI've been completely locked out of my account since 7am this morning (it's now past 8am). Here's what I've tried:\n\n1. Normal login → \"Invalid credentials\" (I haven't changed my password)\n2. \"Forgot password\" link → submitted twice, waited 45 min, no reset email received\n3. Checked spam/junk folders — nothing there\n4. Tried from different browser (Chrome, Firefox) — same result\n\nMy account email is petra.voigt@globaltech.de and my company has 40 active users. This is directly blocking my work — I have a client presentation at 10am that requires data from the platform.\n\nPlease help ASAP!\n\nPetra Voigt\nProject Manager, GlobalTech GmbH",
+    "sender": "petra.voigt@globaltech.de",
+    "timestamp": "2024-03-15T08:05:00Z",
+    "ground_truth": {
+      "urgency": "high",
+      "team": "technical",
+      "acceptable_teams": [],
+      "grading_notes": "Account lockout with failed self-service recovery and an imminent business deadline (10am presentation). Impacts one user but is actively blocking work. High urgency, not critical (no revenue loss, no security breach). Technical team owns authentication/access issues.",
+      "reply_keywords": {
+        "mandatory": ["account", "access", "reset"],
+        "important": ["password", "unlock", "technical", "team"],
+        "bonus": ["escalate", "priority", "presentation", "immediately", "10am"]
+      },
+      "reply_rubric": {
+        "must_acknowledge_blocking_impact": "Reference that this is blocking their work",
+        "must_provide_immediate_action": "State that the account will be manually investigated or unlocked",
+        "must_set_urgency_expectation": "Indicate fast response time given the 10am deadline",
+        "tone": "Empathetic, action-oriented"
+      }
+    }
+  },
+  {
+    "email_id": "easy_005",
+    "subject": "Pre-start onboarding documents missing — starting April 1st",
+    "body": "Dear HR Department,\n\nMy name is Oliver Thatch and I've accepted an offer for the Product Manager role in the London office, starting April 1st, 2024 (offer letter ref: OL-2024-0387).\n\nI completed the online background check and tax forms through your portal last week. However, I still need:\n\n- IT equipment request form (my hiring manager mentioned a MacBook Pro + monitor)\n- Benefits enrollment documents (health, dental, pension)\n- Building access / security badge application\n- First-week orientation schedule\n\nMy start date is 2 weeks away and I want to make sure everything is ready so day one goes smoothly. Is there a single point of contact I should coordinate with?\n\nKind regards,\nOliver Thatch\noliver.thatch@personal.com\n+44 7700 900123",
+    "sender": "oliver.thatch@personal.com",
+    "timestamp": "2024-03-18T16:45:00Z",
+    "ground_truth": {
+      "urgency": "medium",
+      "team": "hr",
+      "acceptable_teams": ["management"],
+      "grading_notes": "Pre-start administrative request with a 2-week runway. Important to get right (first impressions matter for retention) but no emergency. Standard HR onboarding workflow. Medium urgency because there IS a fixed deadline.",
+      "reply_keywords": {
+        "mandatory": ["onboarding", "documents", "send"],
+        "important": ["equipment", "benefits", "welcome", "start date"],
+        "bonus": ["orientation", "badge", "April 1st", "point of contact", "portal"]
+      },
+      "reply_rubric": {
+        "must_welcome_new_employee": "Warm welcome / express excitement about them joining",
+        "must_address_missing_documents": "Acknowledge the specific items they listed",
+        "must_provide_next_step_or_contact": "Name a person or process for follow-up",
+        "tone": "Welcoming, organised, reassuring"
+      }
+    }
+  }
+]
