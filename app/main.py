@@ -24,6 +24,8 @@ from typing import Dict, Optional, Tuple
 
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
+import os
 
 from app.env import EmailTriageEnv
 from app.models import (
@@ -292,7 +294,12 @@ async def get_state(
 
 @app.get("/", tags=["system"])
 async def root():
-    """Redirect to docs."""
+    """Serve the Neural Terminal dashboard on the root endpoint."""
+    html_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "index.html")
+    if os.path.exists(html_path):
+        return FileResponse(html_path)
+    
+    # Fallback if index.html is somehow missing
     return {
         "message": "EmailTriageEnv is running. Visit /docs for API documentation.",
         "endpoints": ["/health", "/reset", "/step", "/state", "/docs"],
