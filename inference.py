@@ -30,10 +30,10 @@ from openai import OpenAI
 # Configuration
 # ──────────────────────────────────────────────────────────────────────────────
 
-API_BASE_URL: str = os.environ.get("API_BASE_URL", "https://api.openai.com/v1")
-MODEL_NAME: str = os.environ.get("MODEL_NAME", "gpt-4o")
-HF_TOKEN: str = os.environ.get("HF_TOKEN", "")
-ENV_URL: str = os.environ.get("ENV_URL", "http://localhost:7860")
+API_BASE_URL: str = os.getenv("API_BASE_URL", "https://api.openai.com/v1")
+MODEL_NAME: str = os.getenv("MODEL_NAME", "gpt-4o")
+HF_TOKEN: str = os.getenv("HF_TOKEN")
+ENV_URL: str = os.getenv("ENV_URL", "http://localhost:7860")
 
 TASKS: List[str] = ["easy", "medium", "hard"]
 SESSION_ID: str = "inference-run"
