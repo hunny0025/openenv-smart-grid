@@ -27,8 +27,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 import os
 
-from app.env import EmailTriageEnv
-from app.models import (
+from server.env import EmailTriageEnv
+from server.models import (
     EmailAction,
     EmailObservation,
     HealthResponse,

@@ -7,7 +7,7 @@ name = "email-triage-env"
 version = "1.0.0"
 description = "Real-world corporate email triage RL environment"
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 license = {text = "MIT"}
 authors = [
     { name = "Hunny0025" }
@@ -17,9 +17,11 @@ dependencies = [
     "uvicorn>=0.27.0",
     "pydantic>=2.5.0",
     "openai>=1.12.0",
-    "python-dotenv>=1.0.0",
-    "requests>=2.31.0",
+    "openenv-core>=0.2.0",
 ]
 
+[project.scripts]
+server = "server.app:app"
+
 [tool.setuptools]
-packages = ["app"]
+packages = ["server"]

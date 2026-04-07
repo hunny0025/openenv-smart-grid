@@ -13,10 +13,10 @@ import random
 import uuid
 from typing import Any, Dict, List, Optional
 
-from app.graders import grade
-from app.models import EmailAction, EmailObservation, StepResult
-from app.reward import compute_reward
-from app.tasks import get_task_config, list_task_ids, sample_email
+from server.graders import grade
+from server.models import EmailAction, EmailObservation, StepResult
+from server.reward import compute_reward
+from server.tasks import get_task_config, list_task_ids, sample_email
 
 
 class EmailTriageEnv:

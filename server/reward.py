@@ -12,7 +12,7 @@ from __future__ import annotations
 
 from typing import Any, Dict, List, Union
 
-from app.models import EmailAction
+from server.models import EmailAction
 
 
 # Ordered urgency scale — distance determines partial credit

@@ -16,8 +16,8 @@ import re
 from typing import Any, Dict, List, Union
 
 
-from app.models import EmailAction
-from app.reward import URGENCY_LEVELS
+from server.models import EmailAction
+from server.reward import URGENCY_LEVELS
 
 
 # ──────────────────────────────────────────────────────────────────────────────
