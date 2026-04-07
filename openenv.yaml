@@ -1,9 +1,13 @@
 name: email-triage-env
-version: 1.0.0
+version: "1.0.0"
+spec_version: 1
 description: >
   Real-world corporate email triage RL environment.
   Agents classify urgency, route emails to the correct team,
   and draft professional replies across three difficulty levels.
+
+action: EmailAction
+observation: EmailObservation
 
 tasks:
   - id: easy
@@ -32,49 +36,6 @@ tasks:
       must detect urgency escalation and route based on the FINAL state.
       Graded on context awareness (0.2) + urgency shift (0.3) +
       routing (0.3) + reply coherence (0.2).
-
-action_space:
-  type: structured
-  fields:
-    - name: urgency
-      type: enum
-      values: [low, medium, high, critical]
-      description: Urgency classification of the email
-    - name: team
-      type: enum
-      values: [billing, technical, sales, hr, management, legal]
-      description: Team responsible for handling the email
-    - name: reply_draft
-      type: string
-      description: 1-3 sentence professional reply to the sender
-    - name: reasoning
-      type: string
-      description: Brief chain-of-thought explaining classification
-
-observation_space:
-  type: structured
-  fields:
-    - name: email_id
-      type: string
-      description: Unique email identifier
-    - name: subject
-      type: string
-      description: Email subject line
-    - name: body
-      type: string
-      description: Full email body or assembled thread
-    - name: sender
-      type: string
-      description: Sender email address
-    - name: timestamp
-      type: string
-      description: ISO-8601 timestamp
-    - name: task_id
-      type: string
-      description: Current task difficulty level
-    - name: step_number
-      type: integer
-      description: Current step index in the episode
 
 reward:
   type: partial_credit
